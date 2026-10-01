@@ -1,0 +1,16 @@
+{
+    "name": "tonyapps/module-action-log",
+    "description": "Track admin actions and system changes, monitor logins/sessions, restore changes.",
+    "type": "magento2-module",
+    "require": {
+        "php": "~8.1.0||~8.2.0||~8.3.0",
+        "magento/framework": "*"
+    },
+    "version": "1.0.0",
+    "autoload": {
+        "files": ["registration.php"],
+        "psr-4": {
+            "Tonyapps\\ActionLog\\": ""
+        }
+    }
+}

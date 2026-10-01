@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">tonyapps_actionlog_log_listing.tonyapps_actionlog_log_listing_data_source</item>
+        </item>
+    </argument>
+    <dataSource name="tonyapps_actionlog_log_listing_data_source">
+        <argument name="dataProvider" xsi:type="configurableObject">
+            <argument name="class" xsi:type="string">Tonyapps\ActionLog\Model\ResourceModel\ActionLog\Grid\DataProvider</argument>
+            <argument name="name" xsi:type="string">tonyapps_actionlog_log_listing_data_source</argument>
+            <argument name="primaryFieldName" xsi:type="string">log_id</argument>
+            <argument name="requestFieldName" xsi:type="string">log_id</argument>
+        </argument>
+        <argument name="data" xsi:type="array">
+            <item name="js_config" xsi:type="array">
+                <item name="component" xsi:type="string">Magento_Ui/js/grid/provider</item>
+            </item>
+        </argument>
+    </dataSource>
+    <listingToolbar name="listing_top">
+        <bookmark name="bookmarks"/>
+        <columnsControls name="columns_controls"/>
+        <filters name="listing_filters"/>
+        <paging name="listing_paging"/>
+    </listingToolbar>
+    <columns name="tonyapps_actionlog_log_columns">
+        <column name="log_id">
+            <settings>
+                <filter>textRange</filter>
+                <sorting>desc</sorting>
+                <label translate="true">ID</label>
+            </settings>
+        </column>
+        <column name="created_at" class="Magento\Ui\Component\Listing\Columns\Date">
+            <settings>
+                <filter>dateRange</filter>
+                <dataType>date</dataType>
+                <label translate="true">Date</label>
+            </settings>
+        </column>
+        <column name="username">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Admin User</label>
+            </settings>
+        </column>
+        <column name="full_action_name">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Action</label>
+            </settings>
+        </column>
+        <column name="event_type">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Event</label>
+            </settings>
+        </column>
+        <column name="entity_type">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Entity</label>
+            </settings>
+        </column>
+        <column name="entity_id">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Entity ID</label>
+            </settings>
+        </column>
+        <column name="ip_address">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">IP Address</label>
+            </settings>
+        </column>
+        <column name="user_agent">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Browser</label>
+            </settings>
+        </column>
+        <actionsColumn name="actions" class="Tonyapps\ActionLog\Ui\Component\Listing\Column\LogActions">
+            <settings>
+                <indexField>log_id</indexField>
+            </settings>
+        </actionsColumn>
+    </columns>
+</listing>

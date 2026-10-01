@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="tonyapps_action_log" resource="default" engine="innodb" comment="Action Log">
+        <column xsi:type="int" name="log_id" padding="10" unsigned="true" nullable="false" identity="true" comment="Log ID"/>
+        <column xsi:type="int" name="admin_user_id" padding="10" unsigned="true" nullable="true" comment="Admin User ID"/>
+        <column xsi:type="varchar" name="username" length="128" nullable="true" comment="Username"/>
+        <column xsi:type="varchar" name="full_action_name" length="191" nullable="true" comment="Full Action Name"/>
+        <column xsi:type="varchar" name="event_type" length="32" nullable="false" default="action" comment="Event Type"/>
+        <column xsi:type="varchar" name="entity_type" length="64" nullable="true" comment="Entity Type"/>
+        <column xsi:type="varchar" name="entity_id" length="32" nullable="true" comment="Entity ID"/>
+        <column xsi:type="varchar" name="model_class" length="191" nullable="true" comment="Model Class"/>
+        <column xsi:type="mediumtext" name="data_before" nullable="true" comment="Data Before"/>
+        <column xsi:type="mediumtext" name="data_after" nullable="true" comment="Data After"/>
+        <column xsi:type="varchar" name="ip_address" length="45" nullable="true" comment="IP Address"/>
+        <column xsi:type="varchar" name="user_agent" length="255" nullable="true" comment="User Agent"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="log_id"/>
+        </constraint>
+        <index referenceId="TONYAPPS_ACTION_LOG_CREATED_AT" indexType="btree">
+            <column name="created_at"/>
+        </index>
+        <index referenceId="TONYAPPS_ACTION_LOG_ADMIN_USER_ID" indexType="btree">
+            <column name="admin_user_id"/>
+        </index>
+    </table>
+    <table name="tonyapps_admin_login_log" resource="default" engine="innodb" comment="Admin Login Log">
+        <column xsi:type="int" name="id" padding="10" unsigned="true" nullable="false" identity="true" comment="ID"/>
+        <column xsi:type="int" name="admin_user_id" padding="10" unsigned="true" nullable="true" comment="Admin User ID"/>
+        <column xsi:type="varchar" name="username" length="128" nullable="true" comment="Username"/>
+        <column xsi:type="varchar" name="status" length="16" nullable="false" comment="Status"/>
+        <column xsi:type="varchar" name="ip_address" length="45" nullable="true" comment="IP Address"/>
+        <column xsi:type="varchar" name="user_agent" length="255" nullable="true" comment="User Agent"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+        <index referenceId="TONYAPPS_ADMIN_LOGIN_LOG_CREATED_AT" indexType="btree">
+            <column name="created_at"/>
+        </index>
+    </table>
+    <table name="tonyapps_admin_session" resource="default" engine="innodb" comment="Admin Active Session">
+        <column xsi:type="int" name="id" padding="10" unsigned="true" nullable="false" identity="true" comment="ID"/>
+        <column xsi:type="int" name="admin_user_id" padding="10" unsigned="true" nullable="true" comment="Admin User ID"/>
+        <column xsi:type="varchar" name="username" length="128" nullable="true" comment="Username"/>
+        <column xsi:type="varchar" name="session_id" length="64" nullable="false" comment="Session ID"/>
+        <column xsi:type="varchar" name="ip_address" length="45" nullable="true" comment="IP Address"/>
+        <column xsi:type="varchar" name="user_agent" length="255" nullable="true" comment="User Agent"/>
+        <column xsi:type="timestamp" name="login_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Login At"/>
+        <column xsi:type="timestamp" name="last_activity_at" on_update="true" nullable="false" default="CURRENT_TIMESTAMP" comment="Last Activity At"/>
+        <column xsi:type="varchar" name="status" length="16" nullable="false" default="active" comment="Status"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+        <index referenceId="TONYAPPS_ADMIN_SESSION_SESSION_ID" indexType="btree">
+            <column name="session_id"/>
+        </index>
+        <index referenceId="TONYAPPS_ADMIN_SESSION_STATUS" indexType="btree">
+            <column name="status"/>
+        </index>
+    </table>
+</schema>

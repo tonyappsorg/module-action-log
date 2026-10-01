@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Tonyapps_ActionLog::actionlog" title="Action Log" translate="title" module="Tonyapps_ActionLog" sortOrder="70" resource="Tonyapps_ActionLog::actionlog"/>
+        <add id="Tonyapps_ActionLog::log" title="Action Log" translate="title" module="Tonyapps_ActionLog" sortOrder="10" parent="Tonyapps_ActionLog::actionlog" action="tonyapps_actionlog/log/index" resource="Tonyapps_ActionLog::log"/>
+        <add id="Tonyapps_ActionLog::loginlog" title="Login Log" translate="title" module="Tonyapps_ActionLog" sortOrder="20" parent="Tonyapps_ActionLog::actionlog" action="tonyapps_actionlog/loginlog/index" resource="Tonyapps_ActionLog::loginlog"/>
+        <add id="Tonyapps_ActionLog::session" title="Active Sessions" translate="title" module="Tonyapps_ActionLog" sortOrder="30" parent="Tonyapps_ActionLog::actionlog" action="tonyapps_actionlog/session/index" resource="Tonyapps_ActionLog::session"/>
+        <add id="Tonyapps_ActionLog::config" title="Configuration" translate="title" module="Tonyapps_ActionLog" sortOrder="40" parent="Tonyapps_ActionLog::actionlog" action="adminhtml/system_config/edit/section/tonyapps_actionlog" resource="Tonyapps_ActionLog::config"/>
+    </menu>
+</config>
