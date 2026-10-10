@@ -18,9 +18,7 @@ class RestorerTest extends TestCase
             $this->createMock(Json::class)
         );
 
-        $log = $this->createMock(ActionLog::class);
-        $log->method('getModelClass')->willReturn(null);
-        $log->method('getDataBefore')->willReturn(null);
+        $log = $this->log([]);
 
         $this->expectException(LocalizedException::class);
         $restorer->restore($log);
@@ -44,10 +42,7 @@ class RestorerTest extends TestCase
 
         $restorer = new Restorer($objectManager, $json);
 
-        $log = $this->createMock(ActionLog::class);
-        $log->method('getModelClass')->willReturn('Some\Model\Class');
-        $log->method('getDataBefore')->willReturn('{"sku":"old-1"}');
-        $log->method('getEntityId')->willReturn('1');
+        $log = $this->log(['model_class' => 'Some\Model\Class', 'data_before' => '{"sku":"old-1"}', 'entity_id' => '1']);
 
         $this->expectException(LocalizedException::class);
         $restorer->restore($log);
@@ -72,11 +67,16 @@ class RestorerTest extends TestCase
 
         $restorer = new Restorer($objectManager, $json);
 
-        $log = $this->createMock(ActionLog::class);
-        $log->method('getModelClass')->willReturn('Some\Model\Class');
-        $log->method('getDataBefore')->willReturn('{"sku":"old-1"}');
-        $log->method('getEntityId')->willReturn('1');
+        $log = $this->log(['model_class' => 'Some\Model\Class', 'data_before' => '{"sku":"old-1"}', 'entity_id' => '1']);
 
         $restorer->restore($log);
+    }
+
+    private function log(array $data): ActionLog
+    {
+        // getModelClass() etc. are magic DataObject getters, so set real data instead of mocking them
+        $log = $this->getMockBuilder(ActionLog::class)->disableOriginalConstructor()->onlyMethods([])->getMock();
+        $log->setData($data);
+        return $log;
     }
 }

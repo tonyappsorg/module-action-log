@@ -5,6 +5,12 @@
             <item name="provider" xsi:type="string">tonyapps_actionlog_log_listing.tonyapps_actionlog_log_listing_data_source</item>
         </item>
     </argument>
+    <settings>
+        <spinner>tonyapps_actionlog_log_columns</spinner>
+        <deps>
+            <dep>tonyapps_actionlog_log_listing.tonyapps_actionlog_log_listing_data_source</dep>
+        </deps>
+    </settings>
     <dataSource name="tonyapps_actionlog_log_listing_data_source">
         <argument name="dataProvider" xsi:type="configurableObject">
             <argument name="class" xsi:type="string">Tonyapps\ActionLog\Model\ResourceModel\ActionLog\Grid\DataProvider</argument>
@@ -17,6 +23,12 @@
                 <item name="component" xsi:type="string">Magento_Ui/js/grid/provider</item>
             </item>
         </argument>
+        <settings>
+            <updateUrl path="mui/index/render"/>
+            <storageConfig>
+                <param name="indexField" xsi:type="string">log_id</param>
+            </storageConfig>
+        </settings>
     </dataSource>
     <listingToolbar name="listing_top">
         <bookmark name="bookmarks"/>

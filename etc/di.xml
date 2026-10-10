@@ -13,19 +13,34 @@
         <plugin name="tonyapps_actionlog_config_save" type="Tonyapps\ActionLog\Plugin\ConfigSavePlugin"/>
     </type>
 
-    <virtualType name="Tonyapps\ActionLog\Model\ResourceModel\ActionLog\Grid\DataProvider" type="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider">
+    <virtualType name="Tonyapps\ActionLog\Model\ResourceModel\ActionLog\Grid\DataProvider" type="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider"/>
+    <virtualType name="Tonyapps\ActionLog\Model\ResourceModel\ActionLog\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
         <arguments>
-            <argument name="collection" xsi:type="object" shared="false">Tonyapps\ActionLog\Model\ResourceModel\ActionLog\Collection</argument>
+            <argument name="mainTable" xsi:type="string">tonyapps_action_log</argument>
+            <argument name="resourceModel" xsi:type="string">Tonyapps\ActionLog\Model\ResourceModel\ActionLog</argument>
         </arguments>
     </virtualType>
-    <virtualType name="Tonyapps\ActionLog\Model\ResourceModel\AdminLoginLog\Grid\DataProvider" type="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider">
+    <virtualType name="Tonyapps\ActionLog\Model\ResourceModel\AdminLoginLog\Grid\DataProvider" type="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider"/>
+    <virtualType name="Tonyapps\ActionLog\Model\ResourceModel\AdminLoginLog\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
         <arguments>
-            <argument name="collection" xsi:type="object" shared="false">Tonyapps\ActionLog\Model\ResourceModel\AdminLoginLog\Collection</argument>
+            <argument name="mainTable" xsi:type="string">tonyapps_admin_login_log</argument>
+            <argument name="resourceModel" xsi:type="string">Tonyapps\ActionLog\Model\ResourceModel\AdminLoginLog</argument>
         </arguments>
     </virtualType>
-    <virtualType name="Tonyapps\ActionLog\Model\ResourceModel\AdminSession\Grid\DataProvider" type="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider">
+    <virtualType name="Tonyapps\ActionLog\Model\ResourceModel\AdminSession\Grid\DataProvider" type="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider"/>
+    <virtualType name="Tonyapps\ActionLog\Model\ResourceModel\AdminSession\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
         <arguments>
-            <argument name="collection" xsi:type="object" shared="false">Tonyapps\ActionLog\Model\ResourceModel\AdminSession\Collection</argument>
+            <argument name="mainTable" xsi:type="string">tonyapps_admin_session</argument>
+            <argument name="resourceModel" xsi:type="string">Tonyapps\ActionLog\Model\ResourceModel\AdminSession</argument>
         </arguments>
     </virtualType>
+    <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
+        <arguments>
+            <argument name="collections" xsi:type="array">
+                <item name="tonyapps_actionlog_log_listing_data_source" xsi:type="string">Tonyapps\ActionLog\Model\ResourceModel\ActionLog\Grid\Collection</item>
+                <item name="tonyapps_actionlog_loginlog_listing_data_source" xsi:type="string">Tonyapps\ActionLog\Model\ResourceModel\AdminLoginLog\Grid\Collection</item>
+                <item name="tonyapps_actionlog_session_listing_data_source" xsi:type="string">Tonyapps\ActionLog\Model\ResourceModel\AdminSession\Grid\Collection</item>
+            </argument>
+        </arguments>
+    </type>
 </config>

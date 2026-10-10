@@ -1,7 +1,7 @@
 <?php
 namespace Tonyapps\ActionLog\Model\ResourceModel;
 
-use Magento\Framework\DB\Expr;
+use Magento\Framework\DB\Sql\Expression;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 
 class AdminSession extends AbstractDb
@@ -15,7 +15,7 @@ class AdminSession extends AbstractDb
     {
         $this->getConnection()->update(
             $this->getMainTable(),
-            ['last_activity_at' => new Expr('NOW()')],
+            ['last_activity_at' => new Expression('NOW()')],
             ['session_id = ?' => $sessionId, 'status = ?' => 'active']
         );
     }
