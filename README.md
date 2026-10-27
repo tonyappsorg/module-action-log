@@ -42,8 +42,8 @@ Logging is **off by default**. Turn it on at
 | Setting | Description |
 |---|---|
 | Enable Action Log | Turns logging on. |
-| Log Retention (days) | Logs older than this are deleted by the daily cleanup cron (02:00). `0` disables cleanup. |
-| Entities to Snapshot for Restore | Entities whose before-state is saved so changes can be restored. |
+| Log Retention (days) | Logs, and sessions idle for longer than this, are deleted by the daily cleanup cron (02:00). `0` disables cleanup. |
+| Entities to Snapshot for Restore | Entities whose before-state is saved so changes can be restored. Snapshots keep column and attribute values only (not images, stock, tier prices), in the store view the change was made in. Password hashes and tokens are redacted and left untouched by a restore. |
 
 Make sure Magento cron is running so cleanup happens.
 
@@ -55,7 +55,11 @@ Admin menu **Action Log**:
 - **Login Log** – admin login attempts.
 - **Active Sessions** – current admin sessions, with terminate.
 
-Access to each page is controlled by ACL under **System → Permissions → User Roles → Action Log**.
+Access to each page is controlled by ACL under **System → Permissions → User Roles → Action Log**. Restore needs
+**Action Log → Restore Entities** plus the entity's own edit permission (e.g. *Catalog → Products*), and only runs on POST.
+
+Config changes are logged with secrets redacted: fields of type `obscure`, with an encrypted backend, or registered as
+sensitive config paths, plus any key containing password, secret, token, private_key, signature or api/access key.
 
 ## Uninstall
 

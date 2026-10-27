@@ -28,7 +28,8 @@ class Restorer
         if (!$model->getId()) {
             throw new LocalizedException(__('The original entity no longer exists and cannot be restored.'));
         }
-        $model->addData($data);
+        // Redacted values (password hash, reset token) stay as they are now.
+        $model->addData(array_filter($data, static fn ($value) => $value !== Logger::REDACTED));
         $model->save();
     }
 }

@@ -29,6 +29,11 @@ class Data extends AbstractHelper
 
     public function isWatchedModel(object $object): bool
     {
-        return in_array(get_class($object), $this->getWatchedModelClasses(), true);
+        foreach ($this->getWatchedModelClasses() as $class) {
+            if ($object instanceof $class) {
+                return true;
+            }
+        }
+        return false;
     }
 }

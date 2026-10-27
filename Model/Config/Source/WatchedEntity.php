@@ -1,9 +1,9 @@
 <?php
 namespace Tonyapps\ActionLog\Model\Config\Source;
 
-use Magento\Framework\Option\ArrayInterface;
+use Magento\Framework\Data\OptionSourceInterface;
 
-class WatchedEntity implements ArrayInterface
+class WatchedEntity implements OptionSourceInterface
 {
     public function toOptionArray(): array
     {

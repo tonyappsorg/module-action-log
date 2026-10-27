@@ -3,6 +3,16 @@
     <type name="Magento\Framework\Model\ResourceModel\Db\AbstractDb">
         <plugin name="tonyapps_actionlog_entity_snapshot" type="Tonyapps\ActionLog\Plugin\EntitySnapshotPlugin"/>
     </type>
+    <!-- Product, category and customer resource models are EAV and don't extend Db\AbstractDb. -->
+    <type name="Magento\Eav\Model\Entity\AbstractEntity">
+        <plugin name="tonyapps_actionlog_entity_snapshot" type="Tonyapps\ActionLog\Plugin\EntitySnapshotPlugin"/>
+    </type>
+    <!-- Structure is heavy and only needed when config is saved; Logger runs on every admin request. -->
+    <type name="Tonyapps\ActionLog\Model\Logger">
+        <arguments>
+            <argument name="configStructure" xsi:type="object">Magento\Config\Model\Config\Structure\Proxy</argument>
+        </arguments>
+    </type>
     <type name="Magento\Backend\Model\Auth">
         <plugin name="tonyapps_actionlog_auth_login" type="Tonyapps\ActionLog\Plugin\AuthLoginPlugin"/>
     </type>

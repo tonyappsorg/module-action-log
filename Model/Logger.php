@@ -2,6 +2,10 @@
 namespace Tonyapps\ActionLog\Model;
 
 use Magento\Backend\Model\Auth\Session as AuthSession;
+use Magento\Config\Model\Config\Backend\Encrypted;
+use Magento\Config\Model\Config\Structure;
+use Magento\Config\Model\Config\Structure\Element\Field;
+use Magento\Config\Model\Config\TypePool;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\HTTP\PhpEnvironment\RemoteAddress;
 use Magento\Framework\Serialize\Serializer\Json;
@@ -11,6 +15,8 @@ use Tonyapps\ActionLog\Model\ResourceModel\AdminSession as SessionResource;
 
 class Logger
 {
+    public const REDACTED = '***redacted***';
+
     private ActionLogFactory $actionLogFactory;
     private ActionLogResource $actionLogResource;
     private AdminLoginLogFactory $loginLogFactory;
@@ -21,6 +27,8 @@ class Logger
     private RequestInterface $request;
     private AuthSession $authSession;
     private Json $json;
+    private Structure $configStructure;
+    private TypePool $typePool;
 
     public function __construct(
         ActionLogFactory $actionLogFactory,
@@ -32,7 +40,9 @@ class Logger
         RemoteAddress $remoteAddress,
         RequestInterface $request,
         AuthSession $authSession,
-        Json $json
+        Json $json,
+        Structure $configStructure,
+        TypePool $typePool
     ) {
         $this->actionLogFactory = $actionLogFactory;
         $this->actionLogResource = $actionLogResource;
@@ -44,6 +54,8 @@ class Logger
         $this->request = $request;
         $this->authSession = $authSession;
         $this->json = $json;
+        $this->configStructure = $configStructure;
+        $this->typePool = $typePool;
     }
 
     public function recordAction(string $fullActionName): void
@@ -58,15 +70,17 @@ class Logger
 
     public function recordChange(object $entity, ?array $before, ?array $after, string $eventType): void
     {
+        // Stored without the generated \Interceptor suffix so the grid shows "Product" and Restore creates the real model.
+        $class = preg_replace('/\\\\Interceptor$/', '', get_class($entity));
         $model = $this->actionLogFactory->create();
         $model->setData($this->baseData() + [
             'full_action_name' => $this->request->getFullActionName(),
             'event_type' => $eventType,
-            'entity_type' => $this->classBasename(get_class($entity)),
+            'entity_type' => $this->classBasename($class),
             'entity_id' => method_exists($entity, 'getId') ? $entity->getId() : null,
-            'model_class' => get_class($entity),
-            'data_before' => $before ? $this->json->serialize($before) : null,
-            'data_after' => $after ? $this->json->serialize($after) : null,
+            'model_class' => $class,
+            'data_before' => $before ? $this->json->serialize($this->snapshot($before)) : null,
+            'data_after' => $after ? $this->json->serialize($this->snapshot($after)) : null,
         ]);
         $this->actionLogResource->save($model);
     }
@@ -79,7 +93,7 @@ class Logger
             'event_type' => 'update',
             'entity_type' => 'Config',
             'entity_id' => $section,
-            'data_after' => $this->json->serialize($this->redact($groups)),
+            'data_after' => $this->json->serialize($this->redact($this->redactSensitiveFields($section, $groups))),
         ]);
         $this->actionLogResource->save($model);
     }
@@ -133,13 +147,56 @@ class Logger
         return (string) end($parts);
     }
 
-    // ponytail: redacts by key name only; a secret nested under a differently-named key slips through. Add a field-path allowlist if that shows up.
+    /**
+     * Column and attribute values only: objects (stock items, extension attributes) and nested arrays can't be
+     * restored by Restorer anyway. Password hashes and reset tokens are redacted like config secrets.
+     */
+    private function snapshot(array $data): array
+    {
+        return $this->redact(array_filter($data, static fn ($value) => $value === null || is_scalar($value)));
+    }
+
+    /**
+     * Redacts posted config fields that the config structure marks as secret: obscure inputs, encrypted backends and
+     * paths registered as sensitive. Field names alone miss e.g. Braintree private_key or PayPal api_signature.
+     */
+    private function redactSensitiveFields(string $path, array $groups): array
+    {
+        foreach ($groups as $groupId => $group) {
+            if (!is_array($group)) {
+                continue;
+            }
+            $groupPath = $path . '/' . $groupId;
+            foreach ((array) ($group['fields'] ?? []) as $fieldId => $field) {
+                if (is_array($field) && array_key_exists('value', $field) && $this->isSensitiveField($groupPath . '/' . $fieldId)) {
+                    $groups[$groupId]['fields'][$fieldId]['value'] = self::REDACTED;
+                }
+            }
+            if (isset($group['groups']) && is_array($group['groups'])) {
+                $groups[$groupId]['groups'] = $this->redactSensitiveFields($groupPath, $group['groups']);
+            }
+        }
+        return $groups;
+    }
+
+    private function isSensitiveField(string $structurePath): bool
+    {
+        $field = $this->configStructure->getElement($structurePath);
+        if (!$field instanceof Field) {
+            return false;
+        }
+        $backend = (string) $field->getAttribute('backend_model');
+        return $field->getType() === 'obscure'
+            || ($backend !== '' && is_a($backend, Encrypted::class, true))
+            || $this->typePool->isPresent($field->getConfigPath() ?: $structurePath, TypePool::TYPE_SENSITIVE);
+    }
+
     private function redact(array $data): array
     {
         $result = [];
         foreach ($data as $key => $value) {
-            if (is_string($key) && preg_match('/password|secret|token|api_key|access_key/i', $key)) {
-                $result[$key] = '***redacted***';
+            if (is_string($key) && preg_match('/password|secret|token|api_key|access_key|private_key|signature/i', $key)) {
+                $result[$key] = self::REDACTED;
             } elseif (is_array($value)) {
                 $result[$key] = $this->redact($value);
             } else {

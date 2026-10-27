@@ -10,6 +10,11 @@ class DummyWatchedEntity
 {
 }
 
+// Stands in for the generated \Interceptor subclass every real model instance is.
+class DummyWatchedEntityInterceptor extends DummyWatchedEntity
+{
+}
+
 class DataTest extends TestCase
 {
     private function createHelper(array $configByPath): Data
@@ -48,6 +53,15 @@ class DataTest extends TestCase
         ]);
 
         $this->assertTrue($helper->isWatchedModel(new DummyWatchedEntity()));
+    }
+
+    public function testIsWatchedModelMatchesInterceptorSubclass(): void
+    {
+        $helper = $this->createHelper([
+            'tonyapps_actionlog/general/watched_models' => DummyWatchedEntity::class,
+        ]);
+
+        $this->assertTrue($helper->isWatchedModel(new DummyWatchedEntityInterceptor()));
     }
 
     public function testIsWatchedModelFalseForUnlistedClass(): void

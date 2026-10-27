@@ -32,6 +32,7 @@ class LogActions extends Column
                     'restore' => [
                         'href' => $this->urlBuilder->getUrl('tonyapps_actionlog/log/restore', ['log_id' => $item['log_id']]),
                         'label' => __('Restore'),
+                        'post' => true,
                         'confirm' => [
                             'title' => __('Restore entity'),
                             'message' => __('Are you sure you want to restore this entity to its previous state?'),

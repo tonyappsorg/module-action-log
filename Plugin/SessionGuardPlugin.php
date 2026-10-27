@@ -2,6 +2,7 @@
 namespace Tonyapps\ActionLog\Plugin;
 
 use Magento\Backend\Model\Auth\Session;
+use Tonyapps\ActionLog\Helper\Data as Helper;
 use Tonyapps\ActionLog\Model\ResourceModel\AdminSession as SessionResource;
 
 // Heartbeats the tracked session on every admin request and enforces a
@@ -10,21 +11,26 @@ use Tonyapps\ActionLog\Model\ResourceModel\AdminSession as SessionResource;
 class SessionGuardPlugin
 {
     private SessionResource $sessionResource;
+    private Helper $helper;
 
-    public function __construct(SessionResource $sessionResource)
+    public function __construct(SessionResource $sessionResource, Helper $helper)
     {
         $this->sessionResource = $sessionResource;
+        $this->helper = $helper;
     }
 
     public function afterProlong(Session $subject, $result)
     {
+        if (!$this->helper->isEnabled()) {
+            return $result;
+        }
         $this->sessionResource->touch($subject->getSessionId());
         return $result;
     }
 
     public function afterIsLoggedIn(Session $subject, $result)
     {
-        if (!$result) {
+        if (!$result || !$this->helper->isEnabled()) {
             return $result;
         }
         if ($this->sessionResource->isTerminated($subject->getSessionId())) {

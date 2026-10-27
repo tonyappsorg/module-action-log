@@ -4,7 +4,9 @@
         <resources>
             <resource id="Magento_Backend::admin">
                 <resource id="Tonyapps_ActionLog::actionlog" title="Action Log" translate="title" sortOrder="70">
-                    <resource id="Tonyapps_ActionLog::log" title="Action Log" translate="title" sortOrder="10"/>
+                    <resource id="Tonyapps_ActionLog::log" title="Action Log" translate="title" sortOrder="10">
+                        <resource id="Tonyapps_ActionLog::restore" title="Restore Entities" translate="title" sortOrder="10"/>
+                    </resource>
                     <resource id="Tonyapps_ActionLog::loginlog" title="Login Log" translate="title" sortOrder="20"/>
                     <resource id="Tonyapps_ActionLog::session" title="Active Sessions" translate="title" sortOrder="30"/>
                     <resource id="Tonyapps_ActionLog::config" title="Configuration" translate="title" sortOrder="40"/>
