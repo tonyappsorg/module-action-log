@@ -8,17 +8,14 @@ use Magento\Ui\Component\Listing\Columns\Column;
 
 class SessionActions extends Column
 {
-    private UrlInterface $urlBuilder;
-
     public function __construct(
         ContextInterface $context,
         UiComponentFactory $uiComponentFactory,
-        UrlInterface $urlBuilder,
+        private readonly UrlInterface $urlBuilder,
         array $components = [],
         array $data = []
     ) {
         parent::__construct($context, $uiComponentFactory, $components, $data);
-        $this->urlBuilder = $urlBuilder;
     }
 
     public function prepareDataSource(array $dataSource): array

@@ -17,45 +17,18 @@ class Logger
 {
     public const REDACTED = '***redacted***';
 
-    private ActionLogFactory $actionLogFactory;
-    private ActionLogResource $actionLogResource;
-    private AdminLoginLogFactory $loginLogFactory;
-    private LoginLogResource $loginLogResource;
-    private AdminSessionFactory $sessionFactory;
-    private SessionResource $sessionResource;
-    private RemoteAddress $remoteAddress;
-    private RequestInterface $request;
-    private AuthSession $authSession;
-    private Json $json;
-    private Structure $configStructure;
-    private TypePool $typePool;
-
     public function __construct(
-        ActionLogFactory $actionLogFactory,
-        ActionLogResource $actionLogResource,
-        AdminLoginLogFactory $loginLogFactory,
-        LoginLogResource $loginLogResource,
-        AdminSessionFactory $sessionFactory,
-        SessionResource $sessionResource,
-        RemoteAddress $remoteAddress,
-        RequestInterface $request,
-        AuthSession $authSession,
-        Json $json,
-        Structure $configStructure,
-        TypePool $typePool
+        private readonly ActionLogFactory $actionLogFactory,
+        private readonly ActionLogResource $actionLogResource,
+        private readonly LoginLogResource $loginLogResource,
+        private readonly SessionResource $sessionResource,
+        private readonly RemoteAddress $remoteAddress,
+        private readonly RequestInterface $request,
+        private readonly AuthSession $authSession,
+        private readonly Json $json,
+        private readonly Structure $configStructure,
+        private readonly TypePool $typePool
     ) {
-        $this->actionLogFactory = $actionLogFactory;
-        $this->actionLogResource = $actionLogResource;
-        $this->loginLogFactory = $loginLogFactory;
-        $this->loginLogResource = $loginLogResource;
-        $this->sessionFactory = $sessionFactory;
-        $this->sessionResource = $sessionResource;
-        $this->remoteAddress = $remoteAddress;
-        $this->request = $request;
-        $this->authSession = $authSession;
-        $this->json = $json;
-        $this->configStructure = $configStructure;
-        $this->typePool = $typePool;
     }
 
     public function recordAction(string $fullActionName): void
@@ -100,21 +73,18 @@ class Logger
 
     public function recordLogin(string $username, bool $success, ?int $adminUserId = null): void
     {
-        $model = $this->loginLogFactory->create();
-        $model->setData([
+        $this->loginLogResource->getConnection()->insert($this->loginLogResource->getMainTable(), [
             'admin_user_id' => $adminUserId,
             'username' => $username,
             'status' => $success ? 'success' : 'failure',
             'ip_address' => $this->remoteAddress->getRemoteAddress(),
             'user_agent' => $this->userAgent(),
         ]);
-        $this->loginLogResource->save($model);
     }
 
     public function openSession(int $adminUserId, string $username, string $sessionId): void
     {
-        $model = $this->sessionFactory->create();
-        $model->setData([
+        $this->sessionResource->getConnection()->insert($this->sessionResource->getMainTable(), [
             'admin_user_id' => $adminUserId,
             'username' => $username,
             'session_id' => $sessionId,
@@ -122,7 +92,6 @@ class Logger
             'user_agent' => $this->userAgent(),
             'status' => 'active',
         ]);
-        $this->sessionResource->save($model);
     }
 
     private function baseData(): array
@@ -143,8 +112,7 @@ class Logger
 
     private function classBasename(string $class): string
     {
-        $parts = explode('\\', $class);
-        return (string) end($parts);
+        return basename(str_replace('\\', '/', $class));
     }
 
     /**

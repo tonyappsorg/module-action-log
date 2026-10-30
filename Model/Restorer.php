@@ -7,13 +7,10 @@ use Magento\Framework\Serialize\Serializer\Json;
 
 class Restorer
 {
-    private ObjectManagerInterface $objectManager;
-    private Json $json;
-
-    public function __construct(ObjectManagerInterface $objectManager, Json $json)
-    {
-        $this->objectManager = $objectManager;
-        $this->json = $json;
+    public function __construct(
+        private readonly ObjectManagerInterface $objectManager,
+        private readonly Json $json
+    ) {
     }
 
     // ponytail: generic load+addData+save restore; entities with multi-table/EAV side effects (e.g. product images, tier prices) may not fully roll back. Good enough for simple fields, revisit per-entity if needed.

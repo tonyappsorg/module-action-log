@@ -9,15 +9,11 @@ use Tonyapps\ActionLog\Model\ResourceModel\AdminSession as SessionResource;
 
 class AuthLoginPlugin
 {
-    private Logger $logger;
-    private Helper $helper;
-    private SessionResource $sessionResource;
-
-    public function __construct(Logger $logger, Helper $helper, SessionResource $sessionResource)
-    {
-        $this->logger = $logger;
-        $this->helper = $helper;
-        $this->sessionResource = $sessionResource;
+    public function __construct(
+        private readonly Logger $logger,
+        private readonly Helper $helper,
+        private readonly SessionResource $sessionResource
+    ) {
     }
 
     public function aroundLogin(Auth $subject, callable $proceed, $username, $password)

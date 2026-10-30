@@ -8,21 +8,12 @@ use Tonyapps\ActionLog\Model\ResourceModel\AdminSession as SessionResource;
 
 class Cleanup
 {
-    private Helper $helper;
-    private ActionLogResource $actionLogResource;
-    private LoginLogResource $loginLogResource;
-    private SessionResource $sessionResource;
-
     public function __construct(
-        Helper $helper,
-        ActionLogResource $actionLogResource,
-        LoginLogResource $loginLogResource,
-        SessionResource $sessionResource
+        private readonly Helper $helper,
+        private readonly ActionLogResource $actionLogResource,
+        private readonly LoginLogResource $loginLogResource,
+        private readonly SessionResource $sessionResource
     ) {
-        $this->helper = $helper;
-        $this->actionLogResource = $actionLogResource;
-        $this->loginLogResource = $loginLogResource;
-        $this->sessionResource = $sessionResource;
     }
 
     public function execute(): void

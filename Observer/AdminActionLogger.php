@@ -11,19 +11,14 @@ use Tonyapps\ActionLog\Model\Logger;
 class AdminActionLogger implements ObserverInterface
 {
     private const ACTION_PATTERNS = [
-        '/save$/i', '/delete$/i', '/massDelete$/i', '/massStatus$/i',
-        '/massEnable$/i', '/massDisable$/i', '/upload$/i', '/remove$/i',
+        '/(save|delete|massStatus|massEnable|massDisable|upload|remove)$/i',
     ];
 
-    private Helper $helper;
-    private Logger $logger;
-    private RequestInterface $request;
-
-    public function __construct(Helper $helper, Logger $logger, RequestInterface $request)
-    {
-        $this->helper = $helper;
-        $this->logger = $logger;
-        $this->request = $request;
+    public function __construct(
+        private readonly Helper $helper,
+        private readonly Logger $logger,
+        private readonly RequestInterface $request
+    ) {
     }
 
     public function execute(EventObserver $observer)

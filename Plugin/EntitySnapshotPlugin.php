@@ -11,13 +11,8 @@ use Tonyapps\ActionLog\Model\Logger;
 // overhead on unwatched saves (the vast majority) is a single in_array check.
 class EntitySnapshotPlugin
 {
-    private Helper $helper;
-    private Logger $logger;
-
-    public function __construct(Helper $helper, Logger $logger)
+    public function __construct(private readonly Helper $helper, private readonly Logger $logger)
     {
-        $this->helper = $helper;
-        $this->logger = $logger;
     }
 
     public function aroundSave(object $subject, callable $proceed, $object)

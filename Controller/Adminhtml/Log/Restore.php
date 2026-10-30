@@ -22,20 +22,13 @@ class Restore extends Action implements HttpPostActionInterface
         \Magento\Customer\Model\Customer::class => 'Magento_Customer::manage',
     ];
 
-    private ActionLogFactory $actionLogFactory;
-    private ActionLogResource $actionLogResource;
-    private Restorer $restorer;
-
     public function __construct(
         Context $context,
-        ActionLogFactory $actionLogFactory,
-        ActionLogResource $actionLogResource,
-        Restorer $restorer
+        private readonly ActionLogFactory $actionLogFactory,
+        private readonly ActionLogResource $actionLogResource,
+        private readonly Restorer $restorer
     ) {
         parent::__construct($context);
-        $this->actionLogFactory = $actionLogFactory;
-        $this->actionLogResource = $actionLogResource;
-        $this->restorer = $restorer;
     }
 
     public function execute()

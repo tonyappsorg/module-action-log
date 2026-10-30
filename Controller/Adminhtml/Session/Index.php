@@ -9,12 +9,9 @@ class Index extends Action
 {
     const ADMIN_RESOURCE = 'Tonyapps_ActionLog::session';
 
-    private PageFactory $resultPageFactory;
-
-    public function __construct(Context $context, PageFactory $resultPageFactory)
+    public function __construct(Context $context, private readonly PageFactory $resultPageFactory)
     {
         parent::__construct($context);
-        $this->resultPageFactory = $resultPageFactory;
     }
 
     public function execute()

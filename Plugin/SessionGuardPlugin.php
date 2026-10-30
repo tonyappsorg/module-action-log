@@ -10,13 +10,11 @@ use Tonyapps\ActionLog\Model\ResourceModel\AdminSession as SessionResource;
 // its next request (prolong()/isLoggedIn() both fire per-request already).
 class SessionGuardPlugin
 {
-    private SessionResource $sessionResource;
-    private Helper $helper;
-
-    public function __construct(SessionResource $sessionResource, Helper $helper)
+    public function __construct(
+        private readonly SessionResource $sessionResource,
+        private readonly Helper $helper
+    )
     {
-        $this->sessionResource = $sessionResource;
-        $this->helper = $helper;
     }
 
     public function afterProlong(Session $subject, $result)

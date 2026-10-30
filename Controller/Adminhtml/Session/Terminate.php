@@ -10,12 +10,9 @@ class Terminate extends Action
 {
     const ADMIN_RESOURCE = 'Tonyapps_ActionLog::session';
 
-    private SessionResource $sessionResource;
-
-    public function __construct(Context $context, SessionResource $sessionResource)
+    public function __construct(Context $context, private readonly SessionResource $sessionResource)
     {
         parent::__construct($context);
-        $this->sessionResource = $sessionResource;
     }
 
     public function execute()
