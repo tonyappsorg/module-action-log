@@ -1,6 +1,9 @@
 <?php
 namespace Tonyapps\ActionLog\Plugin;
 
+use Magento\Framework\App\Area;
+use Magento\Framework\App\State;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Model\AbstractModel;
 use Tonyapps\ActionLog\Helper\Data as Helper;
 use Tonyapps\ActionLog\Model\Logger;
@@ -11,13 +14,16 @@ use Tonyapps\ActionLog\Model\Logger;
 // overhead on unwatched saves (the vast majority) is a single in_array check.
 class EntitySnapshotPlugin
 {
-    public function __construct(private readonly Helper $helper, private readonly Logger $logger)
-    {
+    public function __construct(
+        private readonly Helper $helper,
+        private readonly Logger $logger,
+        private readonly State $appState
+    ) {
     }
 
     public function aroundSave(object $subject, callable $proceed, $object)
     {
-        if (!$object instanceof AbstractModel || !$this->helper->isEnabled() || !$this->helper->isWatchedModel($object)) {
+        if (!$this->shouldRecord($object)) {
             return $proceed($object);
         }
         $before = $object->getOrigData();
@@ -33,12 +39,28 @@ class EntitySnapshotPlugin
 
     public function aroundDelete(object $subject, callable $proceed, $object)
     {
-        if (!$object instanceof AbstractModel || !$this->helper->isEnabled() || !$this->helper->isWatchedModel($object)) {
+        if (!$this->shouldRecord($object)) {
             return $proceed($object);
         }
         $before = $object->getData();
         $result = $proceed($object);
         $this->logger->recordChange($object, $before, null, 'delete');
         return $result;
+    }
+
+    /**
+     * Only admin edits are snapshotted: storefront, cron and API saves (e.g. customers updating their account) would
+     * fill the table with personal data nobody restores.
+     */
+    private function shouldRecord($object): bool
+    {
+        if (!$object instanceof AbstractModel || !$this->helper->isEnabled() || !$this->helper->isWatchedModel($object)) {
+            return false;
+        }
+        try {
+            return $this->appState->getAreaCode() === Area::AREA_ADMINHTML;
+        } catch (LocalizedException) {
+            return false;
+        }
     }
 }

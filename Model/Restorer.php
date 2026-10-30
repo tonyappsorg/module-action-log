@@ -21,6 +21,11 @@ class Restorer
         }
         $data = $this->json->unserialize($log->getDataBefore());
         $model = $this->objectManager->create($log->getModelClass());
+        // Load the store view the change was made in; otherwise default-scope values are compared and an unchanged
+        // default makes EAV skip the store-view value.
+        if (isset($data['store_id']) && method_exists($model, 'setStoreId')) {
+            $model->setStoreId((int) $data['store_id']);
+        }
         $model->load($log->getEntityId());
         if (!$model->getId()) {
             throw new LocalizedException(__('The original entity no longer exists and cannot be restored.'));

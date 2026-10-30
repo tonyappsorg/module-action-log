@@ -19,7 +19,14 @@ class ConfigSavePlugin
             return $proceed();
         }
         $result = $proceed();
-        $this->logger->recordConfigChange((string) $subject->getSection(), (array) $subject->getGroups());
+        $website = $subject->getWebsite();
+        $store = $subject->getStore();
+        $this->logger->recordConfigChange(
+            (string) $subject->getSection(),
+            (array) $subject->getGroups(),
+            $website !== null && $website !== '' ? (string) $website : null,
+            $store !== null && $store !== '' ? (string) $store : null
+        );
         return $result;
     }
 }

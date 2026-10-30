@@ -11,7 +11,8 @@ use Tonyapps\ActionLog\Model\Logger;
 class AdminActionLogger implements ObserverInterface
 {
     private const ACTION_PATTERNS = [
-        '/(save|delete|massStatus|massEnable|massDisable|upload|remove)$/i',
+        '/(save|saverole|delete|massStatus|massEnable|massDisable|upload|remove|cancel|hold)$/i',
+        '/^loginascustomer_login_login$/',
     ];
 
     public function __construct(

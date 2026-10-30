@@ -29,6 +29,7 @@ class SessionActions extends Column
                     'terminate' => [
                         'href' => $this->urlBuilder->getUrl('tonyapps_actionlog/session/terminate', ['id' => $item['id']]),
                         'label' => __('Terminate'),
+                        'post' => true,
                         'confirm' => [
                             'title' => __('Terminate session'),
                             'message' => __('Are you sure you want to terminate this admin session?'),

@@ -61,6 +61,23 @@ Access to each page is controlled by ACL under **System → Permissions → User
 Config changes are logged with secrets redacted: fields of type `obscure`, with an encrypted backend, or registered as
 sensitive config paths, plus any key containing password, secret, token, private_key, signature or api/access key.
 
+## Review fixes (2026-10-30)
+
+- **Grids check ACL on data loads too**: each listing's data source declares its ACL resource, so `mui/index/render`
+  refuses roles without *Action Log*, *Login Log* or *Active Sessions*.
+- **Session ids are stored as SHA-256 hashes**, never raw, and the sessions grid doesn't load the column. Rows written
+  before this change hold raw ids that no longer match: their sessions can't be terminated from the grid and stop
+  heartbeating. Clear them with `TRUNCATE tonyapps_admin_session;` (admins stay logged in; their next login is tracked
+  again), or ignore them until the cleanup cron removes them.
+- **The Action Log grid no longer loads `data_before`/`data_after`**; it gets a `has_snapshot` flag instead. Restore
+  is offered only for updates with a snapshot, not for deletes (the entity is gone).
+- **Restore loads the store view the snapshot was taken in**, so store-view edits are rolled back.
+- **Snapshots are taken only for admin saves**, not storefront, cron or API saves. The backend session is injected as
+  a proxy, so saves outside the admin no longer start one.
+- **Terminate is POST-only**.
+- **More actions logged**: role saves, Login as Customer, and order cancel/hold/unhold (single and mass).
+- **Config changes record their scope**: `data_after` is now `{"website": …, "store": …, "groups": {…}}`.
+
 ## Uninstall
 
 ```bash

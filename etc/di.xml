@@ -11,6 +11,8 @@
     <type name="Tonyapps\ActionLog\Model\Logger">
         <arguments>
             <argument name="configStructure" xsi:type="object">Magento\Config\Model\Config\Structure\Proxy</argument>
+            <!-- The snapshot plugin builds Logger on any watched save; a real backend session would start one. -->
+            <argument name="authSession" xsi:type="object">Magento\Backend\Model\Auth\Session\Proxy</argument>
         </arguments>
     </type>
     <type name="Magento\Backend\Model\Auth">
@@ -23,24 +25,24 @@
         <plugin name="tonyapps_actionlog_config_save" type="Tonyapps\ActionLog\Plugin\ConfigSavePlugin"/>
     </type>
 
-    <virtualType name="Tonyapps\ActionLog\Model\ResourceModel\ActionLog\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+    <type name="Tonyapps\ActionLog\Model\ResourceModel\ActionLog\Grid\Collection">
         <arguments>
             <argument name="mainTable" xsi:type="string">tonyapps_action_log</argument>
             <argument name="resourceModel" xsi:type="string">Tonyapps\ActionLog\Model\ResourceModel\ActionLog</argument>
         </arguments>
-    </virtualType>
+    </type>
     <virtualType name="Tonyapps\ActionLog\Model\ResourceModel\AdminLoginLog\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
         <arguments>
             <argument name="mainTable" xsi:type="string">tonyapps_admin_login_log</argument>
             <argument name="resourceModel" xsi:type="string">Tonyapps\ActionLog\Model\ResourceModel\AdminLoginLog</argument>
         </arguments>
     </virtualType>
-    <virtualType name="Tonyapps\ActionLog\Model\ResourceModel\AdminSession\Grid\Collection" type="Magento\Framework\View\Element\UiComponent\DataProvider\SearchResult">
+    <type name="Tonyapps\ActionLog\Model\ResourceModel\AdminSession\Grid\Collection">
         <arguments>
             <argument name="mainTable" xsi:type="string">tonyapps_admin_session</argument>
             <argument name="resourceModel" xsi:type="string">Tonyapps\ActionLog\Model\ResourceModel\AdminSession</argument>
         </arguments>
-    </virtualType>
+    </type>
     <type name="Magento\Framework\View\Element\UiComponent\DataProvider\CollectionFactory">
         <arguments>
             <argument name="collections" xsi:type="array">

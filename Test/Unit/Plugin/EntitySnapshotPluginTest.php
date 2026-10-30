@@ -1,6 +1,8 @@
 <?php
 namespace Tonyapps\ActionLog\Test\Unit\Plugin;
 
+use Magento\Framework\App\State;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Model\AbstractModel;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 use PHPUnit\Framework\TestCase;
@@ -19,7 +21,7 @@ class EntitySnapshotPluginTest extends TestCase
         $logger = $this->createMock(Logger::class);
         $logger->expects($this->never())->method('recordChange');
 
-        $plugin = new EntitySnapshotPlugin($helper, $logger);
+        $plugin = new EntitySnapshotPlugin($helper, $logger, $this->state('adminhtml'));
         $subject = $this->createMock(AbstractDb::class);
         $object = $this->createMock(AbstractModel::class);
 
@@ -37,7 +39,7 @@ class EntitySnapshotPluginTest extends TestCase
         $logger = $this->createMock(Logger::class);
         $logger->expects($this->never())->method('recordChange');
 
-        $plugin = new EntitySnapshotPlugin($helper, $logger);
+        $plugin = new EntitySnapshotPlugin($helper, $logger, $this->state('adminhtml'));
         $subject = $this->createMock(AbstractDb::class);
         $object = $this->createMock(AbstractModel::class);
 
@@ -59,7 +61,7 @@ class EntitySnapshotPluginTest extends TestCase
             ->method('recordChange')
             ->with($object, null, ['sku' => 'new-1'], 'create');
 
-        $plugin = new EntitySnapshotPlugin($helper, $logger);
+        $plugin = new EntitySnapshotPlugin($helper, $logger, $this->state('adminhtml'));
         $subject = $this->createMock(AbstractDb::class);
 
         $plugin->aroundSave($subject, static fn ($obj) => $obj, $object);
@@ -80,7 +82,7 @@ class EntitySnapshotPluginTest extends TestCase
             ->method('recordChange')
             ->with($object, ['sku' => 'old-1'], ['sku' => 'new-1'], 'update');
 
-        $plugin = new EntitySnapshotPlugin($helper, $logger);
+        $plugin = new EntitySnapshotPlugin($helper, $logger, $this->state('adminhtml'));
         $subject = $this->createMock(AbstractDb::class);
 
         $plugin->aroundSave($subject, static fn ($obj) => $obj, $object);
@@ -100,9 +102,43 @@ class EntitySnapshotPluginTest extends TestCase
             ->method('recordChange')
             ->with($object, ['sku' => 'gone-1'], null, 'delete');
 
-        $plugin = new EntitySnapshotPlugin($helper, $logger);
+        $plugin = new EntitySnapshotPlugin($helper, $logger, $this->state('adminhtml'));
         $subject = $this->createMock(AbstractDb::class);
 
         $plugin->aroundDelete($subject, static fn ($obj) => $obj, $object);
+    }
+
+    /**
+     * @dataProvider nonAdminAreas
+     */
+    public function testSavesOutsideAdminAreaAreNotSnapshotted(?string $area): void
+    {
+        $helper = $this->createMock(Helper::class);
+        $helper->method('isEnabled')->willReturn(true);
+        $helper->method('isWatchedModel')->willReturn(true);
+        $logger = $this->createMock(Logger::class);
+        $logger->expects($this->never())->method('recordChange');
+        $plugin = new EntitySnapshotPlugin($helper, $logger, $this->state($area));
+        $subject = $this->createMock(AbstractDb::class);
+        $object = $this->createMock(AbstractModel::class);
+
+        $this->assertSame('saved', $plugin->aroundSave($subject, static fn ($obj) => 'saved', $object));
+        $this->assertSame('deleted', $plugin->aroundDelete($subject, static fn ($obj) => 'deleted', $object));
+    }
+
+    public static function nonAdminAreas(): array
+    {
+        return [['frontend'], ['crontab'], ['webapi_rest'], [null]];
+    }
+
+    private function state(?string $area): State
+    {
+        $state = $this->createMock(State::class);
+        if ($area === null) {
+            $state->method('getAreaCode')->willThrowException(new LocalizedException(__('Area code is not set')));
+        } else {
+            $state->method('getAreaCode')->willReturn($area);
+        }
+        return $state;
     }
 }

@@ -24,7 +24,8 @@ class LogActions extends Column
             return $dataSource;
         }
         foreach ($dataSource['data']['items'] as &$item) {
-            if (!empty($item['data_before']) && !empty($item['model_class'])) {
+            // The grid collection doesn't select the snapshots; it flags rows that can be restored.
+            if (!empty($item['has_snapshot'])) {
                 $item[$this->getData('name')] = [
                     'restore' => [
                         'href' => $this->urlBuilder->getUrl('tonyapps_actionlog/log/restore', ['log_id' => $item['log_id']]),

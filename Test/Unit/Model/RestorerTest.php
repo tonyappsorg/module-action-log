@@ -72,6 +72,32 @@ class RestorerTest extends TestCase
         $restorer->restore($log);
     }
 
+    public function testLoadsTheStoreViewTheSnapshotWasTakenIn(): void
+    {
+        $json = $this->createMock(Json::class);
+        $json->method('unserialize')->willReturn(['name' => 'Old', 'store_id' => '2']);
+
+        $model = $this->getMockBuilder(AbstractModel::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['load', 'getId', 'addData', 'save'])
+            ->addMethods(['setStoreId'])
+            ->getMockForAbstractClass();
+        $calls = [];
+        $model->expects($this->once())->method('setStoreId')->with(2)
+            ->willReturnCallback(function () use (&$calls, $model) { $calls[] = 'setStoreId'; return $model; });
+        $model->method('load')->willReturnCallback(function () use (&$calls, $model) { $calls[] = 'load'; return $model; });
+        $model->method('getId')->willReturn('1');
+        $model->expects($this->once())->method('save');
+
+        $objectManager = $this->createMock(ObjectManagerInterface::class);
+        $objectManager->method('create')->willReturn($model);
+
+        (new Restorer($objectManager, $json))
+            ->restore($this->log(['model_class' => 'Some\Model\Class', 'data_before' => '{}', 'entity_id' => '1']));
+
+        $this->assertSame(['setStoreId', 'load'], $calls);
+    }
+
     private function log(array $data): ActionLog
     {
         // getModelClass() etc. are magic DataObject getters, so set real data instead of mocking them

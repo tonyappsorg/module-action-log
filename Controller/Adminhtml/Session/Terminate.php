@@ -3,10 +3,11 @@ namespace Tonyapps\ActionLog\Controller\Adminhtml\Session;
 
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
+use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Tonyapps\ActionLog\Model\ResourceModel\AdminSession as SessionResource;
 
-class Terminate extends Action
+class Terminate extends Action implements HttpPostActionInterface
 {
     const ADMIN_RESOURCE = 'Tonyapps_ActionLog::session';
 

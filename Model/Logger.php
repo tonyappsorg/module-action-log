@@ -58,7 +58,7 @@ class Logger
         $this->actionLogResource->save($model);
     }
 
-    public function recordConfigChange(string $section, array $groups): void
+    public function recordConfigChange(string $section, array $groups, ?string $website = null, ?string $store = null): void
     {
         $model = $this->actionLogFactory->create();
         $model->setData($this->baseData() + [
@@ -66,7 +66,11 @@ class Logger
             'event_type' => 'update',
             'entity_type' => 'Config',
             'entity_id' => $section,
-            'data_after' => $this->json->serialize($this->redact($this->redactSensitiveFields($section, $groups))),
+            'data_after' => $this->json->serialize([
+                'website' => $website,
+                'store' => $store,
+                'groups' => $this->redact($this->redactSensitiveFields($section, $groups)),
+            ]),
         ]);
         $this->actionLogResource->save($model);
     }
@@ -87,7 +91,7 @@ class Logger
         $this->sessionResource->getConnection()->insert($this->sessionResource->getMainTable(), [
             'admin_user_id' => $adminUserId,
             'username' => $username,
-            'session_id' => $sessionId,
+            'session_id' => SessionResource::hashSessionId($sessionId),
             'ip_address' => $this->remoteAddress->getRemoteAddress(),
             'user_agent' => $this->userAgent(),
             'status' => 'active',

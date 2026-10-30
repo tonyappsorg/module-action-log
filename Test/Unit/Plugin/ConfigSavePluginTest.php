@@ -9,17 +9,19 @@ use Tonyapps\ActionLog\Plugin\ConfigSavePlugin;
 
 class ConfigSavePluginTest extends TestCase
 {
-    public function testEnabledModuleRecordsAfterSuccessfulSave(): void
+    public function testEnabledModuleRecordsAfterSuccessfulSaveWithScope(): void
     {
         $helper = $this->createMock(Helper::class);
         $helper->method('isEnabled')->willReturn(true);
         $logger = $this->createMock(Logger::class);
-        $logger->expects(self::once())->method('recordConfigChange')->with('payment', ['group' => ['field' => '1']]);
+        $logger->expects(self::once())->method('recordConfigChange')->with('payment', ['group' => ['field' => '1']], '1', null);
         $subject = $this->getMockBuilder(Config::class)
             ->disableOriginalConstructor()
-            ->addMethods(['getSection', 'getGroups'])
+            ->addMethods(['getSection', 'getGroups', 'getWebsite', 'getStore'])
             ->getMock();
         $subject->method('getSection')->willReturn('payment');
+        $subject->method('getWebsite')->willReturn('1');
+        $subject->method('getStore')->willReturn('');
         $subject->method('getGroups')->willReturn(['group' => ['field' => '1']]);
 
         $result = (new ConfigSavePlugin($logger, $helper))->aroundSave($subject, static fn() => 'saved');

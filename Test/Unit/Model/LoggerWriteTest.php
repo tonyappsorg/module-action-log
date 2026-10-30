@@ -53,4 +53,32 @@ class LoggerWriteTest extends TestCase
 
         $logger->recordLogin('admin', true, 12);
     }
+
+    public function testOpenSessionStoresOnlyTheHashOfTheSessionId(): void
+    {
+        $connection = $this->createMock(AdapterInterface::class);
+        $connection->expects(self::once())->method('insert')->with(
+            'tonyapps_admin_session',
+            self::callback(static fn (array $row) => $row['session_id'] === hash('sha256', 'raw-session')
+                && !in_array('raw-session', $row, true))
+        );
+        $sessions = $this->createMock(SessionResource::class);
+        $sessions->method('getConnection')->willReturn($connection);
+        $sessions->method('getMainTable')->willReturn('tonyapps_admin_session');
+
+        $logger = new Logger(
+            $this->createMock(ActionLogFactory::class),
+            $this->createMock(ActionLogResource::class),
+            $this->createMock(LoginLogResource::class),
+            $sessions,
+            $this->createMock(RemoteAddress::class),
+            $this->createMock(Http::class),
+            $this->createMock(AuthSession::class),
+            $this->createMock(Json::class),
+            $this->createMock(Structure::class),
+            $this->createMock(TypePool::class)
+        );
+
+        $logger->openSession(12, 'admin', 'raw-session');
+    }
 }

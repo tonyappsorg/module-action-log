@@ -29,6 +29,7 @@
                 <param name="indexField" xsi:type="string">id</param>
             </storageConfig>
         </settings>
+        <aclResource>Tonyapps_ActionLog::session</aclResource>
     </dataSource>
     <listingToolbar name="listing_top">
         <bookmark name="bookmarks"/>

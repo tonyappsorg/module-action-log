@@ -29,6 +29,7 @@
                 <param name="indexField" xsi:type="string">log_id</param>
             </storageConfig>
         </settings>
+        <aclResource>Tonyapps_ActionLog::log</aclResource>
     </dataSource>
     <listingToolbar name="listing_top">
         <bookmark name="bookmarks"/>
