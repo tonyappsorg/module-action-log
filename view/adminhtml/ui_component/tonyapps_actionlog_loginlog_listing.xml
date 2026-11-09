@@ -58,8 +58,10 @@
                 <label translate="true">Username</label>
             </settings>
         </column>
-        <column name="status">
+        <column name="status" class="Tonyapps\ActionLog\Ui\Component\Listing\Column\LoginStatus">
             <settings>
+                <options class="Tonyapps\ActionLog\Model\Source\LoginStatus"/>
+                <bodyTmpl>ui/grid/cells/html</bodyTmpl>
                 <filter>select</filter>
                 <label translate="true">Status</label>
             </settings>
@@ -70,8 +72,9 @@
                 <label translate="true">IP Address</label>
             </settings>
         </column>
-        <column name="user_agent">
+        <column name="user_agent" class="Tonyapps\ActionLog\Ui\Component\Listing\Column\UserAgent">
             <settings>
+                <bodyTmpl>ui/grid/cells/html</bodyTmpl>
                 <filter>text</filter>
                 <label translate="true">Browser</label>
             </settings>

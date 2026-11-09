@@ -4,6 +4,15 @@ Magento 2 module that tracks admin actions and system changes, logs admin logins
 
 Requires PHP 8.1–8.3.
 
+## 2026-11-09 grid readability
+
+- The Browser column of all three grids reads "Chrome 156 on macOS"; the raw User-Agent is in the cell's tooltip.
+- Login Log status is a badge (green Success, red Failed) with a working Success/Failed filter.
+- Action Log rows written without a signed-in admin (CLI, cron, setup scripts) show *System (CLI / cron)*; the
+  request column is called **Request** and the restore column **Restore**.
+- `mui_*` requests (the admin UI saving grid views, columns and filters) are no longer logged.
+- Dates are shown in the store timezone (Stores > Configuration > General > Locale Options).
+
 ## Installation
 
 ### Option A: copy into `app/code`

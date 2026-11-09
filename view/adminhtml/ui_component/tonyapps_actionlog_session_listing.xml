@@ -57,8 +57,9 @@
                 <label translate="true">IP Address</label>
             </settings>
         </column>
-        <column name="user_agent">
+        <column name="user_agent" class="Tonyapps\ActionLog\Ui\Component\Listing\Column\UserAgent">
             <settings>
+                <bodyTmpl>ui/grid/cells/html</bodyTmpl>
                 <filter>text</filter>
                 <label translate="true">Browser</label>
             </settings>

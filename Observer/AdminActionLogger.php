@@ -28,7 +28,8 @@ class AdminActionLogger implements ObserverInterface
             return;
         }
         $fullAction = $this->request->getFullActionName();
-        if (strpos($fullAction, 'tonyapps_actionlog') === 0) {
+        // Own pages, and mui_* (the admin UI saving grid views, columns and filters) are not admin actions.
+        if (str_starts_with($fullAction, 'tonyapps_actionlog') || str_starts_with($fullAction, 'mui_')) {
             return;
         }
         foreach (self::ACTION_PATTERNS as $pattern) {

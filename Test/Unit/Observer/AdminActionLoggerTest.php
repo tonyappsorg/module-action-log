@@ -37,6 +37,8 @@ class AdminActionLoggerTest extends TestCase
             ['sales_order_massCancel', true],
             ['sales_order_view', false],
             ['catalog_product_index', false],
+            ['mui_bookmark_save', false],
+            ['mui_index_render', false],
         ];
     }
 }
