@@ -91,8 +91,7 @@ ACL tree (**System → Permissions → User Roles → Action Log**):
   in; their next login is tracked again), or wait for the cleanup cron.
 - Restore covers columns/attributes only; not images, stock, tier prices; not deletes.
 - Cleanup depends on Magento cron.
-- No `etc/db_schema_whitelist.json`; `composer.json` requires only `magento/framework` although the module uses
-  Backend, Config, Catalog, Cms, Customer and Eav classes.
+- Catalog, Cms and Customer appear only as class names in the watched-entity list, so they are not required in `composer.json`.
 - Uninstall leaves the three `tonyapps_*` tables; drop them manually.
 
 ## Tests
@@ -105,6 +104,10 @@ Unit tests cover `Helper/Data`, Logger redaction and writes, `AdminSession` reso
 `AdminActionLogger`, all four plugins, and the grid columns. No integration tests.
 
 ## Change history
+
+### 2026-11-13 package metadata
+
+`composer.json` requires Backend, Config, Eav and Ui, which the module uses; `etc/db_schema_whitelist.json` generated with `setup:db-declaration:generate-whitelist`.
 
 ### 2026-11-09 grid readability
 

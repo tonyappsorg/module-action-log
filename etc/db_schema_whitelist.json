@@ -1,0 +1,63 @@
+{
+    "tonyapps_action_log": {
+        "column": {
+            "log_id": true,
+            "admin_user_id": true,
+            "username": true,
+            "full_action_name": true,
+            "event_type": true,
+            "entity_type": true,
+            "entity_id": true,
+            "model_class": true,
+            "data_before": true,
+            "data_after": true,
+            "ip_address": true,
+            "user_agent": true,
+            "created_at": true
+        },
+        "index": {
+            "TONYAPPS_ACTION_LOG_CREATED_AT": true,
+            "TONYAPPS_ACTION_LOG_ADMIN_USER_ID": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    },
+    "tonyapps_admin_login_log": {
+        "column": {
+            "id": true,
+            "admin_user_id": true,
+            "username": true,
+            "status": true,
+            "ip_address": true,
+            "user_agent": true,
+            "created_at": true
+        },
+        "index": {
+            "TONYAPPS_ADMIN_LOGIN_LOG_CREATED_AT": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    },
+    "tonyapps_admin_session": {
+        "column": {
+            "id": true,
+            "admin_user_id": true,
+            "username": true,
+            "session_id": true,
+            "ip_address": true,
+            "user_agent": true,
+            "login_at": true,
+            "last_activity_at": true,
+            "status": true
+        },
+        "index": {
+            "TONYAPPS_ADMIN_SESSION_SESSION_ID": true,
+            "TONYAPPS_ADMIN_SESSION_STATUS": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        }
+    }
+}
