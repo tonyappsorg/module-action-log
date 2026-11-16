@@ -2,7 +2,7 @@
 
 Read this before changing the module. Workspace-wide rules are in ../AGENTS.md.
 
-Package `tonyapps/module-action-log` v1.0.0, GPL-3.0-or-later. Tracks admin actions and system changes, logs admin logins,
+Package `tonyapps/module-action-log` 1.0.0, GPL-3.0-or-later. Tracks admin actions and system changes, logs admin logins,
 monitors active admin sessions, and restores changed entities.
 
 ## Status
