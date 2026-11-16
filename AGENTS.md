@@ -2,7 +2,7 @@
 
 Read this before changing the module. Workspace-wide rules are in ../AGENTS.md.
 
-Package `tonyapps/module-action-log` v1.0.0, proprietary. Tracks admin actions and system changes, logs admin logins,
+Package `tonyapps/module-action-log` v1.0.0, GPL-3.0-or-later. Tracks admin actions and system changes, logs admin logins,
 monitors active admin sessions, and restores changed entities.
 
 ## Status
@@ -105,6 +105,8 @@ Unit tests cover `Helper/Data`, Logger redaction and writes, `AdminSession` reso
 
 ## Change history
 
+- **2026-11-16** — Released as free software under GPL-3.0-or-later (owner decision): `LICENSE` added,
+  `composer.json` license changed from `proprietary`, License section in the README.
 ### 2026-11-13 package metadata
 
 `composer.json` requires Backend, Config, Eav and Ui, which the module uses; `etc/db_schema_whitelist.json` generated with `setup:db-declaration:generate-whitelist`.
